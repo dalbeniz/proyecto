@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-title>Películas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Contenedor de Filtros -->
+  <div class="filter-container">
+    <ion-item>
+      <ion-label>Título:</ion-label>
+      <ion-input [(ngModel)]="buscarTexto" placeholder="Buscar..."></ion-input>
+    </ion-item>
+
+    <ion-label>Género:</ion-label>
+    <ion-item class="genre-item">
+     
+      <ion-select [(ngModel)]="generoSeleccionado" interface="popover">
+        <ion-select-option value="">Todos</ion-select-option>
+        <ion-select-option *ngFor="let genero of generos" [value]="genero">{{ genero }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Año</ion-label>
+      <ion-input type="number" [(ngModel)]="FechaLanzamiento" placeholder="Año"></ion-input>
+    </ion-item>
+
+    <ion-button color="primary" (click)="filtrar()">Buscar</ion-button>
+  </div>
+
+  <!-- Grid de películas -->
+  <div class="movies-grid">
+    <ion-card *ngFor="let pelicula of peliculasFiltradas" (click)="abrirModal(pelicula)">
+      <img [src]="pelicula.imagen" [alt]="pelicula.titulo" />
+      <ion-card-header>
+        <ion-card-title>{{ pelicula.titulo }}</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </div>
+</ion-content>

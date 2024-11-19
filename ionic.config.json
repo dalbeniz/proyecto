@@ -1,0 +1,7 @@
+{
+  "name": "fronted-b",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

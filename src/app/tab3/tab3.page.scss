@@ -1,0 +1,72 @@
+/* Cambia el color del texto a blanco en todo el cuerpo y en la app-container */
+body, .app-container, .select-boxes, label, ion-label, ion-card-title, ion-card-content {
+    color: white; /* Establece el color del texto a blanco */
+  }
+  
+  /* Personaliza el contenedor principal */
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: rgb(7, 7, 7); /* Fondo oscuro */
+  }
+  
+  /* Estilo para los contenedores de selección */
+  .select-boxes {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+  }
+  
+  /* Contenedor del mapa */
+  .map-container {
+    width: 80%;
+    height: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Cambia el color de las letras en los select box a negro */
+  select {
+    color: black; /* Color del texto en los select boxes */
+    background-color: white; /* Fondo blanco para los select boxes */
+  }
+  
+  /* Cambia el color de las opciones dentro del select a negro */
+  select option {
+    color: black; /* Color de las opciones */
+  }
+  
+  /* Personaliza el mapa */
+  #map {
+      width: 80%;
+      height: 625px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* También asegúrate de que los elementos dentro de las tarjetas (como el título o contenido) sean blancos */
+  ion-card-title, ion-card-content {
+    color: white;
+  }
+  ion-header {
+    --background: #4CAF50;  /* Color de fondo para la barra de navegación */
+  }
+  
+  ion-toolbar {
+    --background: #4CAF50; /* Color personalizado */
+  }
+  
+  ion-title {
+    font-size: 20px;   /* Tamaño del título */
+    color: white;      /* Color del título */
+    font-weight: bold; /* Hacer el título en negrita */
+  }
+  
+  ion-back-button {
+    --color: white;  /* Color de la flecha del botón Volver */
+    --ripple-color: rgba(255, 255, 255, 0.3);  /* Color del efecto ripple */
+  }

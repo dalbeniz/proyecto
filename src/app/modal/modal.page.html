@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar color = "dark">
+    <ion-title>{{ pelicula.titulo}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrar()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  
+  <img [src]="pelicula.imagen" />
+  <p><strong>Año:</strong> {{ pelicula.fechaEstreno}}</p>
+  <p><strong>Reparto:</strong> {{ pelicula.reparto.join(', ') }}</p>
+  <p><strong>Géneros:</strong> {{ pelicula.generos.join(', ') }}</p>
+  <p>{{ pelicula.resumen }}</p>
+
+  <ion-button *ngFor="let clasificacion of ListasClasificacion" (click)="clasificarPelicula(clasificacion)">
+    {{ clasificacion }}
+  </ion-button>
+  <ion-button (click)="abrirGeolocalizacion(pelicula.titulo)">Abrir en Geolocalización</ion-button>
+
+</ion-content>

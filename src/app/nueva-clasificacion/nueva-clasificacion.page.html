@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar color = "dark">
+    <ion-title>Agregar Clasificación</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrar()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item color = "dark">
+    <ion-label position="stacked">Nombre de Clasificación</ion-label>
+    <ion-input [(ngModel)]="nuevaClasificacion" placeholder="Escribe una clasificación..."></ion-input>
+  </ion-item>
+  <ion-button expand="block" color="primary" (click)="agregarClasificacion()">Guardar</ion-button>
+</ion-content>

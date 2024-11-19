@@ -1,0 +1,37 @@
+/* Fondo oscuro*/
+
+.tarjeta{
+    background-color: #1e1e1e;
+}
+ion-content {
+    --background : #1e1e1e; /* Fondo oscuro */
+    --color: #ffffff; /* Color del texto en blanco */
+    padding: 1rem;
+  }
+  
+  /* Estilos del (header) */
+  ion-header {
+       --color: #ffffff; /* Texto blanco */
+  }
+  
+  /* Ajuste de la imagen en el modal */
+  img {
+    width: 100%;
+    max-width: 200px; /* Tamaño máximo para hacer la imagen más pequeña */
+    height: auto;
+    border-radius: 8px;
+    margin: 1rem auto; /* Centrado y con margen */
+    display: block; /* Centra la imagen */
+  }
+  
+  /* Estilo de los botones */
+  ion-button {
+    --background: #007bff; /* Fondo azul para los botones */
+    --color: #ffffff; /* Texto en blanco */
+    margin-top: 1rem;
+  }
+  
+  ion-button:hover {
+    --background: #0056b3; /* Un azul más oscuro en hover */
+  }
+  
