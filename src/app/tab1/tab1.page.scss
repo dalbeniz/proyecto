@@ -38,7 +38,7 @@ ion-content {
   display: flex;
   gap: 1.5rem;
   -webkit-flex-wrap: wrap;
-  flex-wrap: wrap; /* Permite que los elementos se muevan a una nueva línea en pantallas pequeñas */
+  flex-wrap: wrap; //Permite que los elementos se muevan a una nueva línea en pantallas pequeñas 
   align-items: center;
   background-color: #1e1e1e;
   padding: 0.5rem;
@@ -55,7 +55,7 @@ ion-label,
 ion-input,
 ion-select {
   color: #ffffff;
-  --placeholder-color: #ffffff88; /* Placeholder en color blanco semitransparente */
+  --placeholder-color: #ffffff88; 
   --placeholder-color-webkit: #ffffff88;
   --placeholder-color-moz: #ffffff88;
 }
@@ -116,6 +116,8 @@ ion-card {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: 100%; 
+  min-width: 150px; 
 }
 
 /* Ajuste de la imagen en cada tarjeta */
@@ -133,6 +135,12 @@ ion-card-title {
   margin: 0.5rem 0;
   font-weight: bold;
   color: #ffffff;
+  white-space: normal; //Divide el texto el lineas
+  overflow-wrap: break-word; //LAs palabras largas se puede dividir
+  word-break: break-word; 
+  text-align: center;
+  max-width: 100%; 
+  line-height: 1.2; 
 }
 
 /* Responsividad para pantallas medianas */

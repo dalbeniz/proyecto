@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+//import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
 import { latLng, tileLayer, Map, marker, icon,Layer,LatLngBounds } from 'leaflet';
 import * as L from 'leaflet';
 import { CargarPelisService } from '../Servicios/cargar-pelis.service';
@@ -11,7 +12,7 @@ import { GeoService } from '../Servicios/geo.service';
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss']
 })
-export class Tab3Page implements OnInit,AfterViewInit{
+export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
  
   map!: Map;
   lat: number = 43.0000;
@@ -43,6 +44,55 @@ export class Tab3Page implements OnInit,AfterViewInit{
     console.log( "pelicula seleccionada"+ this.selectedMovieTitle);
   }
 
+  ionViewWillEnter(): void {
+    // reseteamos valores
+    this.selectedMovieTitle = '';
+    this.selectedMunicipio = '';
+    this.selectedDistancia = undefined!;
+    this.cines = [];
+    this.initMap(); 
+  }
+  //Método para crear nuevo mapa
+  initMap(): void {
+    const mapContainer = document.getElementById('map');
+  
+    if (!mapContainer) {
+      return;
+    }
+    if (this.map) {
+      this.map.remove();
+    }
+  
+    this.map = new Map('map').setView([this.lat, this.lng], 8);
+  
+    tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(this.map);
+  
+    setTimeout(() => {
+      this.map.invalidateSize();
+
+    }, 300);
+  }
+
+  ionViewWillLeave(): void {
+    this.ngOnDestroy(); 
+  }
+  ngOnDestroy(): void {
+    if (this.map) {
+      this.map.remove();
+      this.map = undefined!; 
+    }
+  
+    const mapContainer = document.getElementById('map');
+    if (mapContainer) {
+      mapContainer.innerHTML = ''; 
+    }
+  }
+
+  
+
 
  loadMovies(): void {
     this.carga.getCartelera().subscribe(
@@ -50,7 +100,7 @@ export class Tab3Page implements OnInit,AfterViewInit{
         this.movies = movies; // Guardamos las películas 
         console.log(this.movies); // Mostramos el array en consola
 
-        //Cargar los títulos de las películas en el desplegable, añadiendo "Todas"
+        //Cargar los títulos de las películas en el desplegable.
         this.movieTitles = [...this.movies.map(movie => movie.pelicula)];
         console.log("Lista de títulos de películas:", this.movieTitles);
       },
@@ -128,9 +178,6 @@ export class Tab3Page implements OnInit,AfterViewInit{
       }
     }
 
-    console.log("hola" + filteredCines);
-
-
       // Verificamos si hay cines disponibles
       if (filteredCines.length > 0) {
           let cineLat: number;
@@ -147,7 +194,6 @@ export class Tab3Page implements OnInit,AfterViewInit{
               cineLat = firstCine.center.lat;
               cineLon = firstCine.center.lon;
           } else {
-              console.warn('Tipo de cine desconocido:', firstCine);
               return; // Salir si el tipo de cine es desconocido
           }
   
@@ -176,7 +222,6 @@ export class Tab3Page implements OnInit,AfterViewInit{
                   cineLat = cine.center.lat;
                   cineLon = cine.center.lon;
               } else {
-                  console.warn('Tipo de cine desconocido:', cine);
                   return; // Salir de la función para este cine
               }
   
@@ -202,6 +247,5 @@ export class Tab3Page implements OnInit,AfterViewInit{
         window.alert('No hay cines para mostrar en el mapa.'); // Mensaje si no hay cines
       }
   }
-
 
 }

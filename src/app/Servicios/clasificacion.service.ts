@@ -11,7 +11,7 @@ export class ClasificacionService {
     'En curso': [],
     'Descartado': []
   };
-
+  private valoraciones: { [key: string]: { total: number; suma: number } } = {};
  
     clasificar(pelicula: any, tipo: string) {
      
@@ -61,5 +61,26 @@ export class ClasificacionService {
         peliculasClasificadas.splice(index, 1); // Elimina solo la película seleccionada
       }
     }
+
+
+    obtenerValoracion(idPelicula: string) {
+      const valoracion = this.valoraciones[idPelicula];
+      if (valoracion) {
+        return {
+          media: valoracion.suma / valoracion.total,
+          total: valoracion.total
+        };
+      }
+      return { media: 0, total: 0 };
+    }
+  
+    guardarValoracion(idPelicula: string, valor: number) {
+      if (!this.valoraciones[idPelicula]) {
+        this.valoraciones[idPelicula] = { total: 0, suma: 0 };
+      }
+      this.valoraciones[idPelicula].total += 1;
+      this.valoraciones[idPelicula].suma += valor;
+    }
+  
 }
 

@@ -1,37 +1,84 @@
-/* Fondo oscuro*/
 
-.tarjeta{
-    background-color: #1e1e1e;
+.tarjeta {
+  background-color: #1e1e1e;
 }
+
 ion-content {
-    --background : #1e1e1e; /* Fondo oscuro */
-    --color: #ffffff; /* Color del texto en blanco */
-    padding: 1rem;
+  --background: #1e1e1e; 
+  --color: #ffffff; 
+  padding: 1rem;
+}
+
+/* Estilos del header */
+ion-header {
+  --color: #ffffff; 
+  text-align: center;
+}
+
+/* Ajuste de la imagen en el modal */
+img {
+  width: 100%;
+  max-width: 200px; /* Tamaño máximo para imagen en pantallas pequeñas */
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem auto;
+  display: block;
+
+  /* Media query para agrandar la imagen en pantallas más grandes */
+  @media (min-width: 600px) {
+    max-width: 300px;
   }
-  
-  /* Estilos del (header) */
-  ion-header {
-       --color: #ffffff; /* Texto blanco */
+
+  @media (min-width: 900px) {
+    max-width: 400px;
   }
-  
-  /* Ajuste de la imagen en el modal */
-  img {
-    width: 100%;
-    max-width: 200px; /* Tamaño máximo para hacer la imagen más pequeña */
-    height: auto;
-    border-radius: 8px;
-    margin: 1rem auto; /* Centrado y con margen */
-    display: block; /* Centra la imagen */
+}
+
+/* Contenedor de botones */
+.botones-container {
+  display: flex;
+  flex-wrap: wrap; //los botones se ajusten automáticamente 
+  justify-content: center; //Centrar horizontalmente los botones 
+  gap: 1rem; //Espacio entre los botones 
+
+  /* Diseño en columna para pantallas pequeñas */
+  @media (max-width: 767px) {
+    flex-direction: column; //Botones en columna 
+    align-items: center; //Centra los botones 
   }
-  
-  /* Estilo de los botones */
-  ion-button {
-    --background: #007bff; /* Fondo azul para los botones */
-    --color: #ffffff; /* Texto en blanco */
-    margin-top: 1rem;
+}
+
+/* Estilo de los botones */
+ion-button {
+  --background: #007bff; 
+  --color: #ffffff; 
+  max-width: 250px; //Máximo ancho por defecto 
+  width: auto; //Ajuste automático por defecto 
+  margin: 0 auto; //Centrar botones horizontalmente 
+
+  /* Hover effect */
+  &:hover {
+    --background: #0056b3; 
   }
-  
-  ion-button:hover {
-    --background: #0056b3; /* Un azul más oscuro en hover */
+}
+
+//Ajuste del contenido de texto 
+p {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+
+  //Texto más grande en pantallas grandes
+  @media (min-width: 768px) {
+    font-size: 1.1rem;
   }
-  
+}
+
+ion-title {
+  font-size: 1.2rem;
+
+  //Agrandar el título en pantallas más grandes 
+  @media (min-width: 768px) {
+    font-size: 1.5rem;
+  }
+}
