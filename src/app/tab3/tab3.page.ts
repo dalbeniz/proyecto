@@ -1,10 +1,12 @@
+import { Coords } from './../../../node_modules/@types/leaflet/index.d';
 //import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnInit, OnDestroy, signal, inject, DestroyRef } from '@angular/core';
 import { latLng, tileLayer, Map, marker, icon,Layer,LatLngBounds } from 'leaflet';
 import * as L from 'leaflet';
 import { CargarPelisService } from '../Servicios/cargar-pelis.service';
 import { Cartelera } from '../mis-interfaces/cartelera';
 import { GeoService } from '../Servicios/geo.service';
+import { Coordenadas } from '../models/models';
 
 
 @Component({
@@ -14,9 +16,12 @@ import { GeoService } from '../Servicios/geo.service';
 })
 export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
  
+  private destroy = inject(DestroyRef);
   map!: Map;
+  coordenada: Coordenadas = {latidud:43.0000, longitud: -2.0000}; 
   lat: number = 43.0000;
   lng: number = -2.0000;
+  private aa = signal<string>('');
   
   // Listado de municipios
   municipios: string[] = ['Bilbao', 'Vitoria-Gasteiz', 'Donostia-San Sebastián', 'Barakaldo', 'Getxo', 'Irun', 'Portugalete', 'Santurtzi', 'Errenteria', 'Basauri'];
@@ -29,6 +34,7 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
   public movieTitles: string[] = []; // Array donde almacenaremos los títulos de las películas
   //public selectedMovieTitle: string = 'Todas'; // Por defecto, la opción será "Todas"
   selectedMovieTitle: string = '';
+  clientPosition = signal<GeolocationCoordinates|undefined>(undefined);
 
   // Configuración del mapa
   options: any;
@@ -42,6 +48,27 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
     this.selectedMovieTitle = this.carga.getTituloPeliculaSeleccionada();
 
     console.log( "pelicula seleccionada"+ this.selectedMovieTitle);
+    this.osm.getCurrentPosition().subscribe({
+      next:(data) =>{
+        console.log('LLAMAR');
+        this.clientPosition.set(data);
+        //Si el mapa existe
+        if(this.map){
+          // Añadir marcador para el primer cine
+          const positionMarker = marker([this.clientPosition()!.latitude, this.clientPosition()!.longitude], {
+            icon: icon({
+                iconSize: [25, 41],
+                iconAnchor: [13, 41],
+                iconUrl: 'assets/location.png', // Ruta del ícono de 
+                
+            })
+          })
+
+          positionMarker.addTo(this.map); // Añadir el marcador al mapa
+        }
+        console.log(data);
+      }
+    });
   }
 
   ionViewWillEnter(): void {
@@ -51,9 +78,12 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
     this.selectedDistancia = undefined!;
     this.cines = [];
     this.initMap(); 
+
+    
   }
   //Método para crear nuevo mapa
   initMap(): void {
+    
     const mapContainer = document.getElementById('map');
   
     if (!mapContainer) {
@@ -63,7 +93,7 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
       this.map.remove();
     }
   
-    this.map = new Map('map').setView([this.lat, this.lng], 8);
+    this.map = new Map('map').setView([this.coordenada.latidud, this.coordenada.longitud], 8);
   
     tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
@@ -130,9 +160,7 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
     if (this.selectedMunicipio && this.selectedDistancia) {
       this.osm.getCoordinates(this.selectedMunicipio).subscribe(response => {
         if (response && response.length > 0) {
-          const location = response[0];
-          this.lat = parseFloat(location.lat);
-          this.lng = parseFloat(location.lon);
+          this.coordenada = {latidud: parseFloat(response[0].lat), longitud: parseFloat(response[0].lon)};
           this.updateMap(); // Método para actualizar el mapa
           this.osm.getNearbyCinemas(this.lat, this.lng, this.selectedDistancia).subscribe(cineResponse => {
             if (cineResponse && cineResponse.elements) {
@@ -147,7 +175,7 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
   }
 
   updateMap(): void {
-    this.map.setView([this.lat, this.lng], 13); // Centra el mapa en el municipio seleccionado
+    this.map.setView([this.coordenada.latidud, this.coordenada.longitud], 13); // Centra el mapa en el municipio seleccionado
   }
 
   
@@ -180,7 +208,21 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
 
       // Verificamos si hay cines disponibles
       if (filteredCines.length > 0) {
-          let cineLat: number;
+          var bounds: LatLngBounds|undefined;
+          var coord : Coordenadas|undefined; 
+
+          filteredCines.forEach(cine => {
+            coord = this.addCinemasToMap(cine);
+            if(coord){
+              if(bounds)
+                bounds.extend([coord.latidud, coord.longitud]);
+              else
+               bounds = new LatLngBounds([coord.latidud, coord.longitud],[coord.latidud, coord.longitud]);
+            }
+            
+          });
+          
+          /*let cineLat: number;
           let cineLon: number;
   
           // Inicializamos los límites con las coordenadas del primer cine
@@ -200,7 +242,7 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
           // Inicializamos los límites con las coordenadas del primer cine
         
           const bounds = new LatLngBounds([cineLat, cineLon], [cineLat, cineLon]); // Usa coordenadas del primer cine, si no da error
-  
+
           // Añadir marcador para el primer cine
           const cineMarker = marker([cineLat, cineLon], {
               icon: icon({
@@ -239,13 +281,43 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
   
               // Extender los límites con las coordenadas del cine
               bounds.extend([cineLat, cineLon]); // Agregar la coordenada del cine a los límites
-          });
-  
+          });*/
           // Ajustar el mapa para mostrar todos los cines
-          this.map.fitBounds(bounds); // Ajustar el mapa para mostrar todos los cines
+          if(bounds)
+            this.map.fitBounds(bounds); // Ajustar el mapa para mostrar todos los cines
       } else {
         window.alert('No hay cines para mostrar en el mapa.'); // Mensaje si no hay cines
       }
+  }
+
+  /**
+   * Añade los mapas al cine
+   * @param cine 
+   * @returns 
+   */
+  addCinemasToMap(cine:any):Coordenadas|undefined{
+    var coor: Coordenadas|undefined;
+    if (cine.type === 'node') 
+      coor = {latidud:cine.lat, longitud: cine.lon};
+    else if (cine.type === 'way' || cine.type === 'relation')
+      coor = {latidud:cine.center.lat, longitud: cine.center.lon};
+
+  // Añadir marcador para el cine
+  if(coor){
+    const cineMarker = L.marker([coor.latidud, coor.longitud], {
+      icon: L.icon({
+          iconSize: [25, 41],
+          iconAnchor: [13, 41],
+          iconUrl: 'assets/cinema-marker-icon.png', // Ruta del ícono de cine
+          shadowUrl: 'assets/marker-shadow.png' // Ruta de la sombra del marcador 
+      })
+    }).bindPopup(cine.tags.name || 'Cine'); // Muestra el nombre del cine en un popup
+
+    cineMarker.addTo(this.map);
+  }
+  
+  return coor;
+
   }
 
 }
