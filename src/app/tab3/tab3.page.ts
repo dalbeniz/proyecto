@@ -48,9 +48,19 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
     this.selectedMovieTitle = this.carga.getTituloPeliculaSeleccionada();
 
     console.log( "pelicula seleccionada"+ this.selectedMovieTitle);
+
+  }
+
+  ionViewWillEnter(): void {
+    // reseteamos valores
+    this.selectedMovieTitle = '';
+    this.selectedMunicipio = '';
+    this.selectedDistancia = undefined!;
+    this.cines = [];
+    this.initMap(); 
+
     this.osm.getCurrentPosition().subscribe({
       next:(data) =>{
-        console.log('LLAMAR');
         this.clientPosition.set(data);
         //Si el mapa existe
         if(this.map){
@@ -69,15 +79,6 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
         console.log(data);
       }
     });
-  }
-
-  ionViewWillEnter(): void {
-    // reseteamos valores
-    this.selectedMovieTitle = '';
-    this.selectedMunicipio = '';
-    this.selectedDistancia = undefined!;
-    this.cines = [];
-    this.initMap(); 
 
     
   }
@@ -208,7 +209,7 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
 
       // Verificamos si hay cines disponibles
       if (filteredCines.length > 0) {
-          var bounds: LatLngBounds|undefined;
+          /*var bounds: LatLngBounds|undefined;
           var coord : Coordenadas|undefined; 
 
           filteredCines.forEach(cine => {
@@ -220,9 +221,9 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
                bounds = new LatLngBounds([coord.latidud, coord.longitud],[coord.latidud, coord.longitud]);
             }
             
-          });
+          });*/
           
-          /*let cineLat: number;
+          let cineLat: number;
           let cineLon: number;
   
           // Inicializamos los límites con las coordenadas del primer cine
@@ -281,9 +282,9 @@ export class Tab3Page implements OnInit, AfterViewInit, OnDestroy {
   
               // Extender los límites con las coordenadas del cine
               bounds.extend([cineLat, cineLon]); // Agregar la coordenada del cine a los límites
-          });*/
+          });
           // Ajustar el mapa para mostrar todos los cines
-          if(bounds)
+          //if(bounds)
             this.map.fitBounds(bounds); // Ajustar el mapa para mostrar todos los cines
       } else {
         window.alert('No hay cines para mostrar en el mapa.'); // Mensaje si no hay cines
